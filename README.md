@@ -1,6 +1,11 @@
 # IoTeX_Monitoring
 
+This will guide you to setting up prometheus, node exporter, and grafana, to monitor your nodes
 
+Initial considerations:
+This is written for a single node, k8s require a slightly different set up.
+
+Architecture: You can run prometheus/node exporter/grafana on the same server you are running iotex OR you can run prometheus and grafana on another server but you will still need to install node exporter on the server you want to monitor. I prefer the second option but whatever option you chose, be very careful with the ports you open and the ip addresses you open those ports to!
 
 
 Step 1 — Creating Service Users

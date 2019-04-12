@@ -247,5 +247,5 @@ Verify that everything is running correctly with the status command.
 sudo systemctl status prometheus
 ```
 
-***Grafana*** ##[Grafana]
+## [Grafana]
 

@@ -1,6 +1,6 @@
 # IoTeX_Monitoring
 
-This will guide you to setting up prometheus, node exporter, and grafana, to monitor your nodes. This will take about 30 minutes, if you already know what you're doing and just want the grafana dashboards, head to:
+This will guide you to setting up prometheus, node exporter, and grafana, to monitor your nodes. This will take about 30 minutes, if you already know what you're doing and just want the grafana dashboards, Click [here](#Grafana) to jump ahead to the grafana configuration or head to:
 
 https://grafana.com/dashboards/8919 for our Chinese speaking friends
 
@@ -8,9 +8,7 @@ or
 
 https://grafana.com/dashboards/10028 Which is the same dashboard that I translated to English
 
-![alt text](https://github.com/natemiller1/IoTeX_Monitoring/blob/master/Screenshot%20from%202019-04-10%2015-43-42.png)
-
-Click [here](#Grafana) to jump ahead to the grafana configuration. 
+![alt text](https://github.com/natemiller1/IoTeX_Monitoring/blob/master/Screenshot%20from%202019-04-10%2015-43-42.png) 
 
 Initial considerations:
 K8s will require a slightly different set up.
@@ -247,5 +245,5 @@ Verify that everything is running correctly with the status command.
 sudo systemctl status prometheus
 ```
 
-## [Grafana]
+## Grafana
 

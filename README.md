@@ -1,6 +1,6 @@
 # IoTeX_Monitoring
 
-This will guide you to setting up prometheus, node exporter, and grafana, to monitor your nodes. This will take about 30 minutes, if you already know what you're doing and just want the grafana dashboards, Click [here](#Grafana) to jump ahead to the grafana configuration or head to:
+This will guide you to setting up prometheus, node exporter, and grafana, to monitor your nodes as well as set up alerts to discord. This will take about 30 minutes, if you already know what you're doing and just want the grafana dashboards, Click [here](#Grafana) to jump ahead to the grafana configuration or head to:
 
 https://grafana.com/dashboards/8919 for our Chinese speaking friends
 
@@ -8,12 +8,14 @@ or
 
 https://grafana.com/dashboards/10028 Which is the same dashboard that I translated to English
 
+If you want to learn how to set up a webhook to your discord channel for alerts, click [here](#Alerts)
+
 ![alt text](https://github.com/natemiller1/IoTeX_Monitoring/blob/master/Screenshot%20from%202019-04-10%2015-43-42.png) 
 
 Initial considerations:
 K8s will require a slightly different set up.
 
-Architecture: You can run prometheus/node exporter/grafana on the same server you are running iotex OR you can run prometheus and grafana on another server but you will still need to install node exporter on the server you want to monitor. I prefer the second option but whatever option you chose, be very careful with the ports you open and the ip addresses you open those ports to!
+Architecture: You can run prometheus/node exporter/grafana on the same server you are running iotex OR you can run prometheus and grafana on another server but you will still need to install node exporter on the server you want to monitor. I prefer the second option but whatever option you chose, be very careful with the ports you open and the ip addresses you open those ports to! No guarantees - Do your own research!
 
 ***Step 1 — Creating Service Users***
 For security purposes, create two new user accounts, and use the --no-create-home and --shell /bin/false options so that these users can't log into the server.
@@ -246,4 +248,95 @@ sudo systemctl status prometheus
 ```
 
 ## Grafana
+
+Get the latest stable release (verify version here): https://grafana.com/grafana/download?platform=linux
+```
+wget https://dl.grafana.com/oss/release/grafana_6.1.3_amd64.deb
+```
+Install the package:
+```
+sudo dpkg -i grafana_6.1.3_amd64.deb
+```
+If you run into an issue with lacking dependencies during install, you may run the following command to try to fix the issue:
+```
+sudo apt --fix-broken install
+```
+Start the Grafana server:
+```
+sudo systemctl start grafana-server
+```
+Verify that Grafana is running:
+```
+sudo systemctl status grafana-server
+```
+Enable at boot:
+```
+sudo systemctl enable grafana-server
+```
+
+## Step 8 - Putting it all together
+
+Verify Prometheus is working correctly by navigating in your browser to localhost:9090 (or the ip address of the server hosting prometheus), clicking the 'Status' dropdown menu and selecting 'Targets'. The state of all nodes you're tracking should be 'Up'. If not, stop here and troubleshoot. It is likely an ip configuration/port issue. You can do a quick check by:
+
+```
+curl localhost:9100/metrics
+or
+curl externalip:9100/metrics
+```
+You should see a series of data scrolling
+
+***Configuring Grafana***
+
+Head to localhost:3000 (externalip:3000) username and password is admin:admin but you'll be required to change the password on first login.
+
+Click 'add a new datasource' and chose Prometheus
+
+Enter the url of the data source (either localhost or the external ip) and click save and test.
+
+Now to import the dashboard:
+
+Hover over the plus sign on the left and click import dashboard
+
+In the grafana.com dashboard input field, enter either 10028 (for english) or 8919 (for Chinese)
+
+Under options, chose Prometheus as your data source and click import. Voila!
+
+When you navigate away from the dashboard, it should ask you if you want to save, click yes.
+
+## Alerts
+
+What good is the dashboard without automatic alerts??
+
+First, go import an alerting dashboard - If you try to create an alert within the dashboard we're using now, you may run into errors. A good dashboard to start with is: 10009
+
+You can start creating alerts now:
+ On the top panel, click edit and edit the data parameters:
+ 
+ Queries to Prometheus
+ 
+ Paste the following in the Query field
+ ```
+ 100.0 - 100 * (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})
+ ```
+ 
+ For legend enter ```{{jobs}}```
+ 
+Notice that the disk space monitoring becomes active immediately, visually indicating used space on nodes (Yellow/Green) as well as the alert trigger limit (red line, 80% of disk space used).
+
+For the second panel:
+```
+100 - (avg by (job) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+```
+
+**Make the Webhook**
+Then in your discord server, create a private channel and click settings. There is an option that says 'webhook', name it, and copy the url at the bottom.
+
+Back in grafana, on the left should be a hover menu with a bell, click on notification channels, then new channel.
+
+Give it a name. Select type Discord. Enable send on all alerts and send image. Paste the webhook url into the appropriate field. Click send test and your discord channel should receive a test alert!
+
+
+I hope this helps, send me feedback over discord in you run into any changes you'd like made @nate#2564
+
+
 

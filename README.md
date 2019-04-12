@@ -10,7 +10,7 @@ https://grafana.com/dashboards/10028 Which is the same dashboard that I translat
 
 ![alt text](https://github.com/natemiller1/IoTeX_Monitoring/blob/master/Screenshot%20from%202019-04-10%2015-43-42.png)
 
-Click here to jump down to the grafana configuration (#grafana)
+Click to jump ahead to the grafana configuration [Grafana](#anchors-in-markdown)
 
 Initial considerations:
 K8s will require a slightly different set up.
@@ -247,5 +247,5 @@ Verify that everything is running correctly with the status command.
 sudo systemctl status prometheus
 ```
 
-***Grafana***[create-an-anchor](#anchors-in-markdown)
+***Grafana***
 
